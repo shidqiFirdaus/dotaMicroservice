@@ -1,0 +1,33 @@
+services:
+  postgres:
+    container_name: "postgres"
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: "myuser"
+      POSTGRES_PASSWORD: "secret"
+      POSTGRES_DB: "mydatabase"
+    ports:
+      - "5432:5432"
+  master:
+    build:
+      context: ./master
+    container_name: "master"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_USER: "myuser"
+      POSTGRES_PASSWORD: "secret"
+      POSTGRES_DB: "mydatabase"
+  stats:
+    container_name: "stats"
+    build: ./stats
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_USER: "myuser"
+      POSTGRES_PASSWORD: "secret"
+      POSTGRES_DB: "mydatabase"
